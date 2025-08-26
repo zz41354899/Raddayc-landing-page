@@ -17,16 +17,22 @@
   </head>
   <body>
     <!-- Sticky Navigation -->
-    <header class="nav">
+    <header class="nav" id="site-nav">
       <div class="container nav__inner">
         <a href="#top" class="brand">Useful vibecode</a>
-        <nav class="nav__actions">
+        <!-- Mobile hamburger -->
+        <button class="nav__toggle" id="navToggle" aria-label="開啟選單" aria-expanded="false" aria-controls="primaryNav">
+          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </button>
+        <nav class="nav__actions" id="primaryNav">
           <a href="#highlights">課程亮點</a>
           <a href="#content">課綱</a>
           <a href="#pricing" class="hide-sm">費用</a>
           <a href="https://www.accupass.com/eflow/ticket/2508261444219907050570" target="_blank" rel="noopener noreferrer" class="btn btn--primary">立即報名 NT$299</a>
         </nav>
       </div>
+      <!-- Overlay for mobile menu -->
+      <div class="nav__overlay" id="navOverlay" hidden></div>
     </header>
 
     <!-- Hero with Parallax Layers -->
@@ -255,6 +261,50 @@
           window.addEventListener('scroll', onScroll, { passive: true });
           onScroll();
         }
+      })();
+
+      // Mobile nav toggle (hamburger)
+      (function () {
+        const header = document.getElementById('site-nav');
+        const btn = document.getElementById('navToggle');
+        const menu = document.getElementById('primaryNav');
+        const overlay = document.getElementById('navOverlay');
+        if (!header || !btn || !menu) return;
+
+        function closeMenu() {
+          header.classList.remove('nav--open');
+          btn.setAttribute('aria-expanded', 'false');
+          btn.setAttribute('aria-label', '開啟選單');
+          document.body.style.overflow = '';
+          if (overlay) overlay.hidden = true;
+        }
+        function openMenu() {
+          header.classList.add('nav--open');
+          btn.setAttribute('aria-expanded', 'true');
+          btn.setAttribute('aria-label', '關閉選單');
+          document.body.style.overflow = 'hidden';
+          if (overlay) overlay.hidden = false;
+        }
+        function toggleMenu() {
+          const isOpen = header.classList.contains('nav--open');
+          isOpen ? closeMenu() : openMenu();
+        }
+
+        btn.addEventListener('click', toggleMenu);
+        if (overlay) overlay.addEventListener('click', closeMenu);
+        // Close on nav link click (mobile)
+        menu.addEventListener('click', (e) => {
+          const target = e.target;
+          if (target && target.tagName === 'A') closeMenu();
+        });
+        // Close on Escape
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeMenu();
+        });
+        // Reset on resize to desktop
+        window.addEventListener('resize', () => {
+          if (window.innerWidth >= 720) closeMenu();
+        });
       })();
 
       // Fade-in on view

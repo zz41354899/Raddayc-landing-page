@@ -56,6 +56,54 @@ img, svg { display: block; max-width: 100%; }
   display: flex; align-items: center; justify-content: space-between;
   height: 64px;
 }
+.nav__toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 10px; background: #fff; cursor: pointer;
+  position: relative;
+}
+.nav__toggle .bar {
+  position: absolute; left: 50%; width: 18px; height: 2px; background: #111827; border-radius: 2px; display: block;
+  transform: translateX(-50%);
+  transition: transform .25s ease, opacity .2s ease, top .25s ease;
+}
+.nav__toggle .bar:nth-child(1) { top: 13px; }
+.nav__toggle .bar:nth-child(2) { top: 19px; }
+.nav__toggle .bar:nth-child(3) { top: 25px; }
+
+/* Morph to X when open */
+.nav--open .nav__toggle .bar:nth-child(1) { top: 19px; transform: translateX(-50%) rotate(45deg); }
+.nav--open .nav__toggle .bar:nth-child(2) { opacity: 0; }
+.nav--open .nav__toggle .bar:nth-child(3) { top: 19px; transform: translateX(-50%) rotate(-45deg); }
+
+/* Overlay for mobile menu */
+.nav__overlay { position: fixed; inset: 0; background: rgba(17,24,39,0.42); backdrop-filter: blur(2px); z-index: 30; opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+.nav--open ~ .nav__overlay,
+.nav.nav--open .nav__overlay { opacity: 1; pointer-events: auto; }
+
+/* Mobile nav dropdown */
+.nav__actions { position: relative; }
+@media (max-width: 719.98px) {
+  .nav__actions {
+    position: absolute; top: 64px; right: 16px; left: 16px; z-index: 40;
+    display: none; flex-direction: column; gap: 10px; padding: 12px;
+    background: color-mix(in srgb, #ffffff 96%, transparent); border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: var(--shadow-lg); backdrop-filter: blur(8px) saturate(120%);
+    transform-origin: top right; transform: scale(.98) translateY(-6px); opacity: 0; transition: transform .2s ease, opacity .2s ease;
+  }
+  .nav--open .nav__actions { display: flex; transform: none; opacity: 1; }
+  .nav__actions a { padding: 10px 12px; border-radius: 8px; }
+  .nav__actions a:hover { background: #f3f4f6; }
+}
+@media (min-width: 720px) {
+  .nav__toggle { display: none; }
+}
+
+/* Focus-visible rings for accessibility */
+.nav__toggle:focus-visible,
+.btn:focus-visible,
+.nav__actions a:focus-visible {
+  outline: 2px solid #111827; outline-offset: 2px;
+}
 .brand {
   font-weight: 700; letter-spacing: 0.2px; color: var(--text); text-decoration: none;
 }
